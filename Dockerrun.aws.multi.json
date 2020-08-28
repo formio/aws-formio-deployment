@@ -1,0 +1,103 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "volumes": [
+    {
+      "name": "certs",
+      "host": {
+        "sourcePath": "/var/app/current/certs"
+      }
+    },
+    {
+      "name": "nginx-proxy-conf",
+      "host": {
+        "sourcePath": "/var/app/current/proxy/conf.d"
+      }
+    }
+  ],
+  "containerDefinitions": [
+    {
+      "name": "api-server",
+      "image": "IMAGE",
+      "environment": [
+        {
+          "name": "MONGO_CA",
+          "value": "/src/certs/rds-combined-ca-bundle.pem"
+        },
+        {
+          "name": "PDF_SERVER",
+          "value": "http://pdf-server:4005"
+        }
+      ],
+      "links": [
+        "pdf-server"
+      ],
+      "portMappings": [
+        {
+          "hostPort": 3000,
+          "containerPort": 80
+        }
+      ],
+      "essential": true,
+      "memory": 128,
+      "mountPoints": [
+        {
+          "sourceVolume": "certs",
+          "containerPath": "/src/certs",
+          "readOnly": true
+        }
+      ]
+    },
+    {
+      "name": "pdf-server",
+      "image": "PDF_IMAGE",
+      "environment": [
+        {
+          "name": "MONGO_CA",
+          "value": "/src/certs/rds-combined-ca-bundle.pem"
+        }
+      ],
+      "portMappings": [
+        {
+          "hostPort": 4005,
+          "containerPort": 4005
+        }
+      ],
+      "essential": true,
+      "memory": 128,
+      "mountPoints": [
+        {
+          "sourceVolume": "certs",
+          "containerPath": "/src/certs",
+          "readOnly": true
+        }
+      ]
+    },
+    {
+      "name": "nginx-proxy",
+      "image": "nginx",
+      "essential": true,
+      "memory": 128,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 80
+        }
+      ],
+      "links": [
+        "api-server",
+        "pdf-server"
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "nginx-proxy-conf",
+          "containerPath": "/etc/nginx/conf.d",
+          "readOnly": true
+        },
+        {
+          "sourceVolume": "awseb-logs-nginx-proxy",
+          "containerPath": "/var/log/nginx"
+        }
+      ]
+    }
+  ]
+}
