@@ -26,19 +26,16 @@
         {
           "name": "PDF_SERVER",
           "value": "http://pdf-server:4005"
+        },
+        {
+          "name": "PORT",
+          "value": "3000"
         }
       ],
       "links": [
         "pdf-server"
       ],
-      "portMappings": [
-        {
-          "hostPort": 3000,
-          "containerPort": 80
-        }
-      ],
-      "essential": true,
-      "memory": 128,
+      "memory": 512,
       "mountPoints": [
         {
           "sourceVolume": "certs",
@@ -56,14 +53,7 @@
           "value": "/src/certs/rds-combined-ca-bundle.pem"
         }
       ],
-      "portMappings": [
-        {
-          "hostPort": 4005,
-          "containerPort": 4005
-        }
-      ],
-      "essential": true,
-      "memory": 128,
+      "memory": 512,
       "mountPoints": [
         {
           "sourceVolume": "certs",
@@ -75,7 +65,6 @@
     {
       "name": "nginx-proxy",
       "image": "nginx",
-      "essential": true,
       "memory": 128,
       "portMappings": [
         {
@@ -90,8 +79,7 @@
       "mountPoints": [
         {
           "sourceVolume": "nginx-proxy-conf",
-          "containerPath": "/etc/nginx/conf.d",
-          "readOnly": true
+          "containerPath": "/etc/nginx/conf.d"
         },
         {
           "sourceVolume": "awseb-logs-nginx-proxy",
