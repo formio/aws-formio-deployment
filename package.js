@@ -25,4 +25,4 @@ const createPackage = function(file, image, pdfImage) {
 createPackage('latest.zip', 'formio/formio-enterprise');
 createPackage('api-server.zip', 'formio/formio-enterprise:7.0.0-rc.22');
 createPackage('pdf-server.zip', 'formio/pdf-server:3.0.0-rc.8');
-createPackage('multi-server.zip', 'formio/formio-enterprise:7.0.0-rc.22', 'formio/pdf-server:3.0.0-rc.8');
+createPackage('multicontainer.zip', 'formio/formio-enterprise:7.0.0-rc.22', 'formio/pdf-server:3.0.0-rc.8');
