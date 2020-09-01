@@ -1,3 +1,5 @@
+const SERVER_VERSION = 'formio/formio-enterprise:7.0.0-rc.23';
+const PDF_VERSION = 'formio/pdf-server:3.0.0-rc.9';
 const child_process = require("child_process");
 const fs = require('fs');
 console.log('Reading .Dockerrun.aws.json');
@@ -23,6 +25,6 @@ const createPackage = function(file, image, pdfImage) {
   fs.unlinkSync('./Dockerrun.aws.json');
 };
 createPackage('latest.zip', 'formio/formio-enterprise');
-createPackage('api-server.zip', 'formio/formio-enterprise:7.0.0-rc.22');
-createPackage('pdf-server.zip', 'formio/pdf-server:3.0.0-rc.8');
-createPackage('multicontainer.zip', 'formio/formio-enterprise:7.0.0-rc.22', 'formio/pdf-server:3.0.0-rc.8');
+createPackage('api-server.zip', SERVER_VERSION);
+createPackage('pdf-server.zip', PDF_VERSION);
+createPackage('multicontainer.zip', SERVER_VERSION, PDF_VERSION);
