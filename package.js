@@ -5,7 +5,7 @@ const fs = require('fs');
 console.log('Reading .Dockerrun.aws.json');
 const Dockerrun = fs.readFileSync('./Dockerrun.aws.single.json', 'utf8');
 const MultiDocker = fs.readFileSync('./Dockerrun.aws.multi.json', 'utf8');
-const createPackage = function(file, image, pdfImage) {
+const createPackage = function(file, image, pdfImage, cert) {
   let awsJson = pdfImage ? MultiDocker : Dockerrun;
   console.log('Removing previous package.');
   try {
@@ -16,6 +16,9 @@ const createPackage = function(file, image, pdfImage) {
   var result = awsJson.replace(/"IMAGE"/g, `"${image}"`);
   if (pdfImage) {
     result = result.replace(/"PDF_IMAGE"/g, `"${pdfImage}"`);
+  }
+  if (cert) {
+    result = result.replace(/rds-combined-ca-bundle/g, cert);
   }
   fs.writeFileSync('./Dockerrun.aws.json', result, 'utf8');
   child_process.execSync(`zip -r ${file} Dockerrun.aws.json certs/* conf.d/* .ebextensions/*`, {
@@ -28,3 +31,4 @@ createPackage('latest.zip', 'formio/formio-enterprise');
 createPackage('api-server.zip', SERVER_VERSION);
 createPackage('pdf-server.zip', PDF_VERSION);
 createPackage('multicontainer.zip', SERVER_VERSION, PDF_VERSION);
+createPackage('multicontainer-gov.zip', SERVER_VERSION, PDF_VERSION, 'rds-combined-ca-us-gov-bundle');
