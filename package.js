@@ -1,5 +1,5 @@
-const SERVER_VERSION = 'formio/formio-enterprise:7.0.0-rc.46';
-const PDF_VERSION = 'formio/pdf-server:3.0.0-rc.19';
+const SERVER_VERSION = 'formio/formio-enterprise:7.0.0-rc.52';
+const PDF_VERSION = 'formio/pdf-server:3.0.0-rc.24';
 const child_process = require("child_process");
 const fs = require('fs');
 console.log('Reading .Dockerrun.aws.json');
