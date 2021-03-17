@@ -32,3 +32,6 @@ createPackage('api-server.zip', SERVER_VERSION);
 createPackage('pdf-server.zip', PDF_VERSION);
 createPackage('multicontainer.zip', SERVER_VERSION, PDF_VERSION);
 createPackage('multicontainer-gov.zip', SERVER_VERSION, PDF_VERSION, 'rds-combined-ca-us-gov-bundle');
+
+// Create submission server packages
+require('./sub-srv/package');
