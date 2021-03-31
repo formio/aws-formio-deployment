@@ -1,0 +1,19 @@
+{
+  "AWSEBDockerrunVersion": "1",
+  "Image": {
+    "Name": "IMAGE",
+    "Update": "true"
+  },
+  "Ports": [
+    {
+      "ContainerPort": "80"
+    }
+  ],
+  "Volumes": [
+    {
+      "HostDirectory": "/var/app/current/certs",
+      "ContainerDirectory": "/src/certs"
+    }
+  ],
+  "Logging": "/var/log/nodejs"
+}
