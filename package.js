@@ -1,5 +1,6 @@
-const SERVER_VERSION = 'formio/formio-enterprise:7.0.2';
-const PDF_VERSION = 'formio/pdf-server:3.0.0';
+
+const SERVER_VERSION = 'formio/formio-enterprise:7.1.0';
+const PDF_VERSION = 'formio/pdf-server:3.1.0';
 const SERVER_V6_VERSION = 'formio/formio-enterprise:6.11.5'
 const PDF_V2_VERSION = 'formio/formio-files-core:2.96.2-rc.2'
 const child_process = require("child_process");
