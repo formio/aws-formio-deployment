@@ -24,7 +24,7 @@
           "value": "/src/certs/rds-combined-ca-bundle.pem"
         },
         {
-          "name": "PDF_SERVER",
+          "name": "FORMIO_FILES_CORE",
           "value": "http://pdf-server:4005"
         },
         {
@@ -46,19 +46,8 @@
     {
       "name": "pdf-server",
       "image": "PDF_IMAGE",
-      "environment": [
-        {
-          "name": "MONGO_CA",
-          "value": "/src/certs/rds-combined-ca-bundle.pem"
-        }
-      ],
-      "memory": 512,
-      "mountPoints": [
-        {
-          "sourceVolume": "certs",
-          "containerPath": "/src/certs"
-        }
-      ]
+      "environment": [],
+      "memory": 512
     },
     {
       "name": "nginx-proxy",
