@@ -40,3 +40,6 @@ createPackage('pdf-v2-server.zip', PDF_V2_VERSION, '', true)
 createPackage('multicontainer.zip', SERVER_VERSION, PDF_VERSION);
 createPackage('multicontainer-v6.zip', SERVER_V6_VERSION, PDF_V2_VERSION, true);
 createPackage('multicontainer-gov.zip', SERVER_VERSION, PDF_VERSION, false, 'rds-combined-ca-us-gov-bundle');
+
+// Create submission server packages
+require('./sub-srv/package');
