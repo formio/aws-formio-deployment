@@ -47,7 +47,7 @@
       "name": "pdf-server",
       "image": "PDF_IMAGE",
       "environment": [],
-      "memory": 512
+      "memory": 1024
     },
     {
       "name": "nginx-proxy",
