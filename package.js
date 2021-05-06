@@ -1,6 +1,6 @@
 
-const SERVER_VERSION = 'formio/formio-enterprise:7.1.0';
-const PDF_VERSION = 'formio/pdf-server:3.1.0';
+const SERVER_VERSION = 'formio/formio-enterprise:7.1.3';
+const PDF_VERSION = 'formio/pdf-server:3.1.1';
 const SERVER_V6_VERSION = 'formio/formio-enterprise:6.11.5'
 const PDF_V2_VERSION = 'formio/formio-files-core:2.96.2-rc.2'
 const child_process = require("child_process");
@@ -40,3 +40,6 @@ createPackage('pdf-v2-server.zip', PDF_V2_VERSION, '', true)
 createPackage('multicontainer.zip', SERVER_VERSION, PDF_VERSION);
 createPackage('multicontainer-v6.zip', SERVER_V6_VERSION, PDF_V2_VERSION, true);
 createPackage('multicontainer-gov.zip', SERVER_VERSION, PDF_VERSION, false, 'rds-combined-ca-us-gov-bundle');
+
+// Create submission server packages
+require('./sub-srv/package');
