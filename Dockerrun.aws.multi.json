@@ -52,7 +52,7 @@
           "value": "/src/certs/rds-combined-ca-bundle.pem"
         }
       ],
-      "memory": 512,
+      "memory": 1024,
       "mountPoints": [
         {
           "sourceVolume": "certs",
