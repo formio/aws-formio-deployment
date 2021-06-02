@@ -35,7 +35,7 @@
       "links": [
         "pdf-server"
       ],
-      "memory": 512,
+      "memory": 1024,
       "mountPoints": [
         {
           "sourceVolume": "certs",
