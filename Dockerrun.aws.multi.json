@@ -27,6 +27,24 @@
       "memory": 512
     },
     {
+      "name": "pdf-converter",
+      "image": "IMAGE",
+      "environment": [
+        {
+          "name": "PORT",
+          "value": "4000"
+        },
+        {
+          "name": "PDFTOJSON_URL",
+          "value": "http://pdf-libs:8080/pdf/pdf2json"
+        }
+      ],
+      "memory": 1024,
+      "links": [
+        "pdf-libs"
+      ]
+    },
+    {
       "name": "api-server",
       "image": "IMAGE",
       "environment": [
