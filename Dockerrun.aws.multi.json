@@ -16,6 +16,17 @@
   ],
   "containerDefinitions": [
     {
+      "name": "pdf-libs",
+      "image": "IMAGE",
+      "environment": [
+        {
+          "name": "PORT",
+          "value": "8080"
+        }
+      ],
+      "memory": 512
+    },
+    {
       "name": "api-server",
       "image": "IMAGE",
       "environment": [
