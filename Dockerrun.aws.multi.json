@@ -79,7 +79,19 @@
         {
           "name": "MONGO_CA",
           "value": "/src/certs/rds-combined-ca-bundle.pem"
+        },
+        {
+          "name": "PDF2FORMIO_URL",
+          "value": "http://pdf-converter:4000"
+        },
+        {
+          "name": "PDFLIBS_URL",
+          "value": "http://pdf-libs:8080"
         }
+      ],
+      "links": [
+        "pdf-libs",
+        "pdf-converter"
       ],
       "memory": 1024,
       "mountPoints": [
