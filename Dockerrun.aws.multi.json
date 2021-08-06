@@ -62,7 +62,7 @@
     },
     {
       "name": "nginx-proxy",
-      "image": "nginx",
+      "image": "public.ecr.aws/nginx/nginx:latest",
       "memory": 128,
       "portMappings": [
         {
