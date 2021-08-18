@@ -1,0 +1,109 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "volumes": [
+    {
+      "name": "certs",
+      "host": {
+        "sourcePath": "/var/app/current/certs"
+      }
+    },
+    {
+      "name": "nginx-proxy-conf",
+      "host": {
+        "sourcePath": "/var/app/current/conf.d.ssl"
+      }
+    }
+  ],
+  "containerDefinitions": [
+    {
+      "name": "api-server",
+      "image": "formio/formio-enterprise:7.1.9-rc.2",
+      "environment": [
+        {
+          "name": "MONGO_CA",
+          "value": "/src/certs/rds-combined-ca-us-gov-bundle.pem"
+        },
+        {
+          "name": "PDF_SERVER",
+          "value": "https://pdf-server:4005"
+        },
+        {
+          "name": "SSL_KEY",
+          "value": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC/UuAjkQr19SnQ\nAULL2BAGnOK1YiMb1ERpMtMskslcJubk5v+eDmma59xiT0mtnqgglq+RIFXtXlgI\ndQCNlo5fSs5bWmJIXCV6VQgNFn/ElDCVjP6oZ3XPX1MotTOail+fNx++ULUbSiSm\nGUHBo10fo7RWiIyE6V1mhrxfk6DigHwkDsXVqzg4VjzdnsU+QPjsXUAp1TXjxSTr\nIPt2XXeeVu8/YcU3Kj0KGoaDATAGEvXq1mJbMVJb+MORUePaHQcZ3UMpSJmBCURM\n+yEu92dENhI7tUNmkiIC3sKqlX6ZOxVR661QAOmMt7CaYq0qLCLy7Nb7yrsVjBoe\n81xECC1LAgMBAAECggEBAI/PzecuKV0EMa/GotzyxekSmF7bK6TJg7rHl3CTzYPV\nQg2hjVbTYpIr4r6K9sjoz1vfqIygD7bjCa0htY64MsByTHbik6nsicdQj0K3PMcY\n1QQ0/V68lhOQhcO9oNJzXLkjCFtX8ypWKwInTgQttdwIg4/gCDAH8ksU0BfPsklO\nGF2ePJQsHrmO/2uOJSNFj6F0Jcwzi0mPO8q8sXGmCG3rnhvgdHKc/114UN2BZLbK\n019YSh5+LEVM87VGd8aeiqiJEG4Ne5ShbNmPVIdOVvuzVIgHkueAY3iYbeRV/z3w\nEG/GJUmVLI8131JPisYfujbHSzYV+LK8vswS+w8j7yECgYEA9nyUKhyHjjnwFUvA\nEZf2U+8xkOL95gFGQW1IiZiK0VjNVIyRSqnnTJPXqoTLDjGvptv6Pny1LKmrbW3p\nK0kr8YHQhhGcWyVbKZaPR7jkuz6hUZF4rJnHMD3bawiWIDeRsTEbO067svZYNPub\nuYhbJ+JtbNdFpl15d6tlYPAab/kCgYEAxrVB6UbUOPo+PSIcpJJfylZrg7Sr7sCs\nPQqUgIz0WDJUi7lmnsRsE5bYnb9xv2HgMfSjnPgPxW98pwTEtSF13SbzPRTbTozr\nOGQaxSDfqNyrxdV2Wcuki84eQjqSxSmHzt6K+GSjqvMxunUy9E80+VN8W+grabZu\n+39yIcW94GMCgYAqFf9eaVyj5jSeDj8PQfknP7Ig4QElIpaSWUyHYeph8F2u0AmG\nzBfYNW4fiWj6VXV+chT6UmTE6XuBxcCISYgdRmMKYTtnPKuiIDj6sBEt/3Wf7czC\n+8bM7+LlFaQ8gAB6Vr4llD3sQq+w7D0corGdz8WLTf5wd4lj63n14UlCUQKBgEFD\nhTtuJQP1xP1lN80huk6FpdhjPdkz9R4zXGUAZryVA0nFAhyBXRHuCIV/PIfkSLN/\nq0FCBEQPgvyER2tKayDQyzEzqXgaNqOV1WkLjAo1OEHJA48ooIm+kBemj1AsfMuI\nMlK1E0BxkdKw7aRqY3bEYeL51VBqN/doe372KJALAoGBAJHt8cAZbKK9kgKPRZAM\n+q3QxTl+lKLGbQnJwtWy6cWjaXGTQZ9QkihiueMHNGDGqUhwBRpK8f7Yc4ThQu4O\naKAYi2TIj8QunUwM7PBDvBMZthnekXGy7XSxuWKFB4IS+WYN5UXF/ev7Yp7IOAsk\nQtYdxjya1ppYIEMGT//dj2Fw\n-----END PRIVATE KEY-----\n"
+        },
+        {
+          "name": "SSL_CERT",
+          "value": "-----BEGIN CERTIFICATE-----\nMIIDXTCCAkWgAwIBAgIJAMiPRJUoVaJJMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNV\nBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBX\naWRnaXRzIFB0eSBMdGQwHhcNMjEwODE3MTgzNDEwWhcNMjIwODE3MTgzNDEwWjBF\nMQswCQYDVQQGEwJBVTETMBEGA1UECAwKU29tZS1TdGF0ZTEhMB8GA1UECgwYSW50\nZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB\nCgKCAQEAv1LgI5EK9fUp0AFCy9gQBpzitWIjG9REaTLTLJLJXCbm5Ob/ng5pmufc\nYk9JrZ6oIJavkSBV7V5YCHUAjZaOX0rOW1piSFwlelUIDRZ/xJQwlYz+qGd1z19T\nKLUzmopfnzcfvlC1G0okphlBwaNdH6O0VoiMhOldZoa8X5Og4oB8JA7F1as4OFY8\n3Z7FPkD47F1AKdU148Uk6yD7dl13nlbvP2HFNyo9ChqGgwEwBhL16tZiWzFSW/jD\nkVHj2h0HGd1DKUiZgQlETPshLvdnRDYSO7VDZpIiAt7CqpV+mTsVUeutUADpjLew\nmmKtKiwi8uzW+8q7FYwaHvNcRAgtSwIDAQABo1AwTjAdBgNVHQ4EFgQUH6sW8Mor\nS0mUeUnCjZNqWqNbgk4wHwYDVR0jBBgwFoAUH6sW8MorS0mUeUnCjZNqWqNbgk4w\nDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAJ9xE+gmEkHHqqMFLkj2j\nt5JgMHXOUNgMwtoRqCx67uo2q+BomINGEd4PSg576JqyAbQs44d2TIvRUQSMd0Uf\n+cU5B6nCJsh2H3PIej+pvFSguTI2ZByTnZg5WqC7H5VEAhZQcWX5ikAWntaBjyPn\no1QKR0+Rc+muZ+1eeEukrDiJ0chYn+355OqbjEFioFpJd7AUlu/zU3iowPpaRekN\nRvNgWe4ORo20Klw66ZfFY3wCWup6tai63Gh6H2e3oFDra+gVbnLyFFsGNti4YOI9\n6KVnAeUvk+8CrxRJNimqQHnNcWq8g78wKEikXGBGBMxeHdjz5tHQtEYJz+mNFIxz\ncA==\n-----END CERTIFICATE-----\n"
+        },
+        {
+          "name": "PORT",
+          "value": "3000"
+        }
+      ],
+      "links": [
+        "pdf-server"
+      ],
+      "memory": 1024,
+      "mountPoints": [
+        {
+          "sourceVolume": "certs",
+          "containerPath": "/src/certs"
+        }
+      ]
+    },
+    {
+      "name": "pdf-server",
+      "image": "formio/pdf-server:3.1.5-patch.1",
+      "environment": [
+        {
+          "name": "MONGO_CA",
+          "value": "/src/certs/rds-combined-ca-us-gov-bundle.pem"
+        },
+        {
+          "name": "SSL_KEY",
+          "value": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC/UuAjkQr19SnQ\nAULL2BAGnOK1YiMb1ERpMtMskslcJubk5v+eDmma59xiT0mtnqgglq+RIFXtXlgI\ndQCNlo5fSs5bWmJIXCV6VQgNFn/ElDCVjP6oZ3XPX1MotTOail+fNx++ULUbSiSm\nGUHBo10fo7RWiIyE6V1mhrxfk6DigHwkDsXVqzg4VjzdnsU+QPjsXUAp1TXjxSTr\nIPt2XXeeVu8/YcU3Kj0KGoaDATAGEvXq1mJbMVJb+MORUePaHQcZ3UMpSJmBCURM\n+yEu92dENhI7tUNmkiIC3sKqlX6ZOxVR661QAOmMt7CaYq0qLCLy7Nb7yrsVjBoe\n81xECC1LAgMBAAECggEBAI/PzecuKV0EMa/GotzyxekSmF7bK6TJg7rHl3CTzYPV\nQg2hjVbTYpIr4r6K9sjoz1vfqIygD7bjCa0htY64MsByTHbik6nsicdQj0K3PMcY\n1QQ0/V68lhOQhcO9oNJzXLkjCFtX8ypWKwInTgQttdwIg4/gCDAH8ksU0BfPsklO\nGF2ePJQsHrmO/2uOJSNFj6F0Jcwzi0mPO8q8sXGmCG3rnhvgdHKc/114UN2BZLbK\n019YSh5+LEVM87VGd8aeiqiJEG4Ne5ShbNmPVIdOVvuzVIgHkueAY3iYbeRV/z3w\nEG/GJUmVLI8131JPisYfujbHSzYV+LK8vswS+w8j7yECgYEA9nyUKhyHjjnwFUvA\nEZf2U+8xkOL95gFGQW1IiZiK0VjNVIyRSqnnTJPXqoTLDjGvptv6Pny1LKmrbW3p\nK0kr8YHQhhGcWyVbKZaPR7jkuz6hUZF4rJnHMD3bawiWIDeRsTEbO067svZYNPub\nuYhbJ+JtbNdFpl15d6tlYPAab/kCgYEAxrVB6UbUOPo+PSIcpJJfylZrg7Sr7sCs\nPQqUgIz0WDJUi7lmnsRsE5bYnb9xv2HgMfSjnPgPxW98pwTEtSF13SbzPRTbTozr\nOGQaxSDfqNyrxdV2Wcuki84eQjqSxSmHzt6K+GSjqvMxunUy9E80+VN8W+grabZu\n+39yIcW94GMCgYAqFf9eaVyj5jSeDj8PQfknP7Ig4QElIpaSWUyHYeph8F2u0AmG\nzBfYNW4fiWj6VXV+chT6UmTE6XuBxcCISYgdRmMKYTtnPKuiIDj6sBEt/3Wf7czC\n+8bM7+LlFaQ8gAB6Vr4llD3sQq+w7D0corGdz8WLTf5wd4lj63n14UlCUQKBgEFD\nhTtuJQP1xP1lN80huk6FpdhjPdkz9R4zXGUAZryVA0nFAhyBXRHuCIV/PIfkSLN/\nq0FCBEQPgvyER2tKayDQyzEzqXgaNqOV1WkLjAo1OEHJA48ooIm+kBemj1AsfMuI\nMlK1E0BxkdKw7aRqY3bEYeL51VBqN/doe372KJALAoGBAJHt8cAZbKK9kgKPRZAM\n+q3QxTl+lKLGbQnJwtWy6cWjaXGTQZ9QkihiueMHNGDGqUhwBRpK8f7Yc4ThQu4O\naKAYi2TIj8QunUwM7PBDvBMZthnekXGy7XSxuWKFB4IS+WYN5UXF/ev7Yp7IOAsk\nQtYdxjya1ppYIEMGT//dj2Fw\n-----END PRIVATE KEY-----\n"
+        },
+        {
+          "name": "SSL_CERT",
+          "value": "-----BEGIN CERTIFICATE-----\nMIIDXTCCAkWgAwIBAgIJAMiPRJUoVaJJMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNV\nBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBX\naWRnaXRzIFB0eSBMdGQwHhcNMjEwODE3MTgzNDEwWhcNMjIwODE3MTgzNDEwWjBF\nMQswCQYDVQQGEwJBVTETMBEGA1UECAwKU29tZS1TdGF0ZTEhMB8GA1UECgwYSW50\nZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB\nCgKCAQEAv1LgI5EK9fUp0AFCy9gQBpzitWIjG9REaTLTLJLJXCbm5Ob/ng5pmufc\nYk9JrZ6oIJavkSBV7V5YCHUAjZaOX0rOW1piSFwlelUIDRZ/xJQwlYz+qGd1z19T\nKLUzmopfnzcfvlC1G0okphlBwaNdH6O0VoiMhOldZoa8X5Og4oB8JA7F1as4OFY8\n3Z7FPkD47F1AKdU148Uk6yD7dl13nlbvP2HFNyo9ChqGgwEwBhL16tZiWzFSW/jD\nkVHj2h0HGd1DKUiZgQlETPshLvdnRDYSO7VDZpIiAt7CqpV+mTsVUeutUADpjLew\nmmKtKiwi8uzW+8q7FYwaHvNcRAgtSwIDAQABo1AwTjAdBgNVHQ4EFgQUH6sW8Mor\nS0mUeUnCjZNqWqNbgk4wHwYDVR0jBBgwFoAUH6sW8MorS0mUeUnCjZNqWqNbgk4w\nDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAJ9xE+gmEkHHqqMFLkj2j\nt5JgMHXOUNgMwtoRqCx67uo2q+BomINGEd4PSg576JqyAbQs44d2TIvRUQSMd0Uf\n+cU5B6nCJsh2H3PIej+pvFSguTI2ZByTnZg5WqC7H5VEAhZQcWX5ikAWntaBjyPn\no1QKR0+Rc+muZ+1eeEukrDiJ0chYn+355OqbjEFioFpJd7AUlu/zU3iowPpaRekN\nRvNgWe4ORo20Klw66ZfFY3wCWup6tai63Gh6H2e3oFDra+gVbnLyFFsGNti4YOI9\n6KVnAeUvk+8CrxRJNimqQHnNcWq8g78wKEikXGBGBMxeHdjz5tHQtEYJz+mNFIxz\ncA==\n-----END CERTIFICATE-----\n"
+        }
+      ],
+      "memory": 1024,
+      "mountPoints": [
+        {
+          "sourceVolume": "certs",
+          "containerPath": "/src/certs"
+        }
+      ]
+    },
+    {
+      "name": "nginx-proxy",
+      "image": "public.ecr.aws/nginx/nginx:latest",
+      "memory": 128,
+      "portMappings": [
+        {
+          "hostPort": 443,
+          "containerPort": 443
+        }
+      ],
+      "links": [
+        "api-server",
+        "pdf-server"
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "nginx-proxy-conf",
+          "containerPath": "/etc/nginx/conf.d"
+        },
+        {
+          "sourceVolume": "awseb-logs-nginx-proxy",
+          "containerPath": "/var/log/nginx"
+        },
+        {
+          "sourceVolume": "certs",
+          "containerPath": "/src/certs"
+        }
+      ]
+    }
+  ]
+}
