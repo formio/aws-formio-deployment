@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  pdf-server:
+    image: formio/pdf-server
+    mem_limit: 1024m
+    ports:
+      - "80:80"
+    volumes:
+      - "./certs:/src/certs:ro"
+    environment:
+      FORMIO_PDF_PORT: 80
+      MONGO_CA: /src/certs/rds-combined-ca-bundle.pem

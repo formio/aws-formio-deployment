@@ -1,4 +1,6 @@
 .DS_Store
 .idea
+.env
+data
 certs/cert.crt
 certs/cert.key

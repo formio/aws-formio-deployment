@@ -1,0 +1,40 @@
+version: "3.8"
+services:
+  api-server:
+    image: formio/formio-enterprise
+    mem_limit: 1024m
+    ports:
+      - "3000:3000"
+    links:
+      - pdf-server
+    volumes:
+      - "./certs:/src/certs:ro"
+    environment:
+      PDF_SERVER: https://pdf-server:4005
+      MONGO_CA: /src/certs/rds-combined-ca-bundle.pem
+      SSL_CERT: ${SSL_CERT}
+      SSL_KEY: ${SSL_KEY}
+      PORT: 3000
+  pdf-server:
+    image: formio/pdf-server
+    mem_limit: 1024m
+    ports:
+      - "4005:4005"
+    volumes:
+      - "./certs:/src/certs:ro"
+    environment:
+      FORMIO_PDF_PORT: 4005
+      MONGO_CA: /src/certs/rds-combined-ca-bundle.pem
+      SSL_CERT: ${SSL_CERT}
+      SSL_KEY: ${SSL_KEY}
+  nginx-proxy:
+    image: nginx
+    mem_limit: 128m
+    ports:
+      - "80:80"
+    volumes:
+      - "./certs:/src/certs:ro"
+      - "./conf.d.ssl:/etc/nginx/conf.d:ro"
+    links:
+      - api-server
+      - pdf-server

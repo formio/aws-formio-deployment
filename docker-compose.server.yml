@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  api-server:
+    image: formio/formio-enterprise
+    mem_limit: 1024m
+    ports:
+      - "80:80"
+    volumes:
+      - "./certs:/src/certs:ro"
+    environment:
+      PORT: 80
+      MONGO_CA: /src/certs/rds-combined-ca-bundle.pem
