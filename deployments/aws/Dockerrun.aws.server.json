@@ -1,0 +1,43 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "volumes": [
+      {
+        "name": "certs",
+        "host": {
+          "sourcePath": "/var/app/current/certs"
+        }
+      }
+    ],
+    "containerDefinitions": [
+      {
+        "name": "api-server",
+        "image": "formio/formio-enterprise",
+        "environment": [
+          {
+            "name": "MONGO_CA",
+            "value": "/src/certs/rds-combined-ca-bundle.pem"
+          },
+          {
+            "name": "PORT",
+            "value": "80"
+          }
+        ],
+        "links": [
+          "pdf-server"
+        ],
+        "portMappings": [
+          {
+            "hostPort": 80,
+            "containerPort": 80
+          }
+        ],
+        "memory": 1024,
+        "mountPoints": [
+          {
+            "sourceVolume": "certs",
+            "containerPath": "/src/certs"
+          }
+        ]
+      }
+    ]
+  }

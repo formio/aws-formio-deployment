@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  api-server:
+    image: formio/submission-server
+    mem_limit: 1024m
+    ports:
+      - "80:80"
+    volumes:
+      - "./certs:/src/certs:ro"
+    environment:
+      PORT: 80
+      PROXY: "true"
+      MONGO_CA: /src/certs/rds-combined-ca-bundle.pem
+    env_file:
+      - .env

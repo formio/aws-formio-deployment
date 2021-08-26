@@ -1,27 +1,28 @@
-const SERVER_VERSION = 'formio/formio-enterprise:7.2.0-rc.3';
-const PDF_VERSION = 'formio/pdf-server:3.2.0-rc.5';
+const SERVER_VERSION = `formio/formio-enterprise:${process.argv[2] || '7.1.7'}`;
+const PDF_VERSION = `formio/pdf-server:${process.argv[3] || '3.1.5'}`;
+const SUBSERVER_VERSION = `formio/formio-enterprise:${process.argv[4] || '8.0.0-m.16'}`;
 const child_process = require("child_process");
 const fs = require('fs');
-const sslCert = fs.readFileSync('./certs/cert.crt', 'utf8');
-const sslKey = fs.readFileSync('./certs/cert.key', 'utf8');
-const DockerCompose = fs.readFileSync('./docker-compose.yml', 'utf8');
-const DockerComposeProd = fs.readFileSync('./docker-compose.prod.yml', 'utf8');
-const DockerComposeSSL = fs.readFileSync('./docker-compose.ssl.yml', 'utf8');
-const DockerComposeServer = fs.readFileSync('./docker-compose.server.yml', 'utf8');
-const DockerComposePDF = fs.readFileSync('./docker-compose.pdf.yml', 'utf8');
-const createPackage = function(file, image, pdfImage, config, cert, ssl) {
+const path = require('path');
+const sslCert = fs.readFileSync('./package/certs/cert.crt', 'utf8');
+const sslKey = fs.readFileSync('./package/certs/cert.key', 'utf8');
+const deployments = require('./deployments');
+const createPackage = function(type, file, image, pdfImage, subImage, config, cert, ssl, manifest) {
   console.log('Removing previous package.');
   try {
-    fs.unlinkSync(`./deploy/${file}`);
+    fs.unlinkSync(`./builds/${type}/${file}`);
   }
   catch (err) {}
-  console.log(`Creating package ${file} with image ${image}`);
+  console.log(`Creating package ${type}/${file} with image ${image}`);
   let result = config;
   if (image) {
     result = config.replace(/formio\/formio-enterprise/g, image);
   }
   if (pdfImage) {
     result = result.replace(/formio\/pdf-server/g, pdfImage);
+  }
+  if (subImage) {
+    result = result.replace(/formio\/submission-server/g, subImage);
   }
   if (cert) {
     result = result.replace(/rds-combined-ca-bundle/g, cert);
@@ -30,24 +31,33 @@ const createPackage = function(file, image, pdfImage, config, cert, ssl) {
     result = result.replace(/\$\{SSL_CERT\}/g, sslCert.toString().replace(/\n/g, '\\n'));
     result = result.replace(/\$\{SSL_KEY\}/g, sslKey.toString().replace(/\n/g, '\\n'));
   }
-  fs.writeFileSync('./docker-compose.yml', result, 'utf8');
-  child_process.execSync(`zip -r deploy/${file} docker-compose.yml certs/* ${ssl ? 'conf.d.ssl/*' : 'conf.d/*'} .ebextensions/*`, {
-    cwd: __dirname
-  });
+  fs.writeFileSync(`./package/${manifest}`, result, 'utf8');
+  try {
+    child_process.execSync(`zip -r ../builds/${type}/${file} ${manifest} certs/* conf.d/* .ebextensions/*`, {
+      cwd: path.join(__dirname, 'package')
+    });
+  }
+  catch (err) {
+    console.log(err);
+  }
+  fs.unlinkSync(`./package/${manifest}`);
   console.log(`Done creating package.`);
 };
 
-createPackage('api-server.zip', SERVER_VERSION, '', DockerComposeServer);
-createPackage('pdf-server.zip', '', PDF_VERSION, DockerComposePDF);
-createPackage('multicontainer.local.zip', SERVER_VERSION, PDF_VERSION, DockerCompose);
-createPackage('multicontainer.latest.zip', '', '', DockerComposeProd);
-createPackage('multicontainer.zip', SERVER_VERSION, PDF_VERSION, DockerComposeProd);
-createPackage('multicontainer.ssl.zip', SERVER_VERSION, PDF_VERSION, DockerComposeSSL, '', true);
-createPackage('multicontainer.gov.zip', SERVER_VERSION, PDF_VERSION, DockerComposeProd, 'rds-combined-ca-us-gov-bundle');
-createPackage('multicontainer.gov.ssl.zip', SERVER_VERSION, PDF_VERSION, DockerComposeSSL, 'rds-combined-ca-us-gov-bundle', true);
-
-// Create submission server packages
-require('./sub-srv/package');
-
-// Reset the docker compose file.
-fs.writeFileSync('./docker-compose.yml', DockerCompose, 'utf8');
+for (let type in deployments) {
+  if (deployments.hasOwnProperty(type)) {
+    deployments[type].deployments.forEach((deployment) => {
+      createPackage(
+        type,
+        deployment.file,
+        deployment.latest ? '' : SERVER_VERSION,
+        deployment.latest ? '' : PDF_VERSION,
+        deployment.latest ? 'formio/formio-enterprise:8.0.0-m.16' : SUBSERVER_VERSION,
+        deployment.manifest,
+        deployment.cert,
+        deployment.ssl,
+        deployments[type].manifest
+      );
+    });
+  }
+}
