@@ -33,7 +33,7 @@ const createPackage = function(type, file, image, pdfImage, subImage, config, ce
   }
   fs.writeFileSync(`./package/${manifest}`, result, 'utf8');
   try {
-    child_process.execSync(`zip -r ../builds/${type}/${file} ${manifest} certs/* conf.d/* .ebextensions/*`, {
+    child_process.execSync(`zip -r ../builds/${type}/${file} ${manifest} certs/* ${ssl ? 'conf.d.ssl' : 'conf.d'}/* .ebextensions/*`, {
       cwd: path.join(__dirname, 'package')
     });
   }

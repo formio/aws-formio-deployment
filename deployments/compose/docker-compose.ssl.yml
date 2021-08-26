@@ -34,7 +34,7 @@ services:
       - "80:80"
     volumes:
       - "./certs:/src/certs:ro"
-      - "./conf.d/ssl:/etc/nginx/conf.d:ro"
+      - "./conf.d.ssl:/etc/nginx/conf.d:ro"
     links:
       - api-server
       - pdf-server

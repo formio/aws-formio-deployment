@@ -30,7 +30,7 @@ services:
       - "80:80"
     volumes:
       - "./certs:/src/certs:ro"
-      - "./conf.d/default:/etc/nginx/conf.d:ro"
+      - "./conf.d:/etc/nginx/conf.d:ro"
     links:
       - api-server
       - pdf-server
