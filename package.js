@@ -1,11 +1,11 @@
-const SERVER_VERSION = 'formio/formio-enterprise:7.1.8-rc.1';
+const SERVER_VERSION = 'formio/formio-enterprise:7.2.0-rc.3';
 const PDF_VERSION = 'formio/pdf-server:3.2.0-rc.5';
 const child_process = require("child_process");
 const fs = require('fs');
 const sslCert = fs.readFileSync('./certs/cert.crt', 'utf8');
 const sslKey = fs.readFileSync('./certs/cert.key', 'utf8');
-const DockerComposeLocal = fs.readFileSync('./docker-compose.local.yml', 'utf8');
 const DockerCompose = fs.readFileSync('./docker-compose.yml', 'utf8');
+const DockerComposeProd = fs.readFileSync('./docker-compose.prod.yml', 'utf8');
 const DockerComposeSSL = fs.readFileSync('./docker-compose.ssl.yml', 'utf8');
 const DockerComposeServer = fs.readFileSync('./docker-compose.server.yml', 'utf8');
 const DockerComposePDF = fs.readFileSync('./docker-compose.pdf.yml', 'utf8');
@@ -18,10 +18,10 @@ const createPackage = function(file, image, pdfImage, config, cert, ssl) {
   console.log(`Creating package ${file} with image ${image}`);
   let result = config;
   if (image) {
-    result = config.replace(/"formio\/formio-enterprise"/g, `"${image}"`);
+    result = config.replace(/formio\/formio-enterprise/g, image);
   }
   if (pdfImage) {
-    result = result.replace(/"formio\/pdf-server"/g, `"${pdfImage}"`);
+    result = result.replace(/formio\/pdf-server/g, pdfImage);
   }
   if (cert) {
     result = result.replace(/rds-combined-ca-bundle/g, cert);
@@ -39,12 +39,15 @@ const createPackage = function(file, image, pdfImage, config, cert, ssl) {
 
 createPackage('api-server.zip', SERVER_VERSION, '', DockerComposeServer);
 createPackage('pdf-server.zip', '', PDF_VERSION, DockerComposePDF);
-createPackage('multicontainer.local.zip', SERVER_VERSION, PDF_VERSION, DockerComposeLocal);
-createPackage('multicontainer.latest.zip', '', '', DockerCompose);
-createPackage('multicontainer.zip', SERVER_VERSION, PDF_VERSION, DockerCompose);
+createPackage('multicontainer.local.zip', SERVER_VERSION, PDF_VERSION, DockerCompose);
+createPackage('multicontainer.latest.zip', '', '', DockerComposeProd);
+createPackage('multicontainer.zip', SERVER_VERSION, PDF_VERSION, DockerComposeProd);
 createPackage('multicontainer.ssl.zip', SERVER_VERSION, PDF_VERSION, DockerComposeSSL, '', true);
-createPackage('multicontainer.gov.zip', SERVER_VERSION, PDF_VERSION, DockerCompose, 'rds-combined-ca-us-gov-bundle');
+createPackage('multicontainer.gov.zip', SERVER_VERSION, PDF_VERSION, DockerComposeProd, 'rds-combined-ca-us-gov-bundle');
 createPackage('multicontainer.gov.ssl.zip', SERVER_VERSION, PDF_VERSION, DockerComposeSSL, 'rds-combined-ca-us-gov-bundle', true);
 
 // Create submission server packages
 require('./sub-srv/package');
+
+// Reset the docker compose file.
+fs.writeFileSync('./docker-compose.yml', DockerCompose, 'utf8');

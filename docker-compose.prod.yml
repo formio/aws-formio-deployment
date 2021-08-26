@@ -10,10 +10,8 @@ services:
     volumes:
       - "./certs:/src/certs:ro"
     environment:
-      PDF_SERVER: https://pdf-server:4005
-      MONGO_CA: /src/certs/rds-combined-ca-bundle.pem
-      SSL_CERT: ${SSL_CERT}
-      SSL_KEY: ${SSL_KEY}
+      PDF_SERVER: http://pdf-server:4005
+      MONGO_CA: /src/certs/rds-combined-ca-us-gov-bundle.pem
       PORT: 3000
     env_file:
       - .env
@@ -26,9 +24,7 @@ services:
       - "./certs:/src/certs:ro"
     environment:
       FORMIO_PDF_PORT: 4005
-      MONGO_CA: /src/certs/rds-combined-ca-bundle.pem
-      SSL_CERT: ${SSL_CERT}
-      SSL_KEY: ${SSL_KEY}
+      MONGO_CA: /src/certs/rds-combined-ca-us-gov-bundle.pem
     env_file:
       - .env
   nginx-proxy:
@@ -38,7 +34,7 @@ services:
       - "80:80"
     volumes:
       - "./certs:/src/certs:ro"
-      - "./conf.d.ssl:/etc/nginx/conf.d:ro"
+      - "./conf.d:/etc/nginx/conf.d:ro"
     links:
       - api-server
       - pdf-server

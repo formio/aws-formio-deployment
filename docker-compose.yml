@@ -1,36 +1,75 @@
 version: "3.8"
 services:
+  mongo:
+    image: mongo
+    restart: always
+    volumes:
+      - "./data/db:/data/db"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME:
+      MONGO_INITDB_ROOT_PASSWORD:
+  minio:
+    image: minio/minio
+    restart: always
+    volumes:
+      - "./data/minio/data:/data"
+      - "./data/minio/config:/root/.minio"
+    environment:
+      MINIO_ACCESS_KEY: CHANGEME
+      MINIO_SECRET_KEY: CHANGEME
+    command: server /data
   api-server:
     image: formio/formio-enterprise
     mem_limit: 1024m
+    restart: always
     ports:
       - "3000:3000"
     links:
+      - mongo
       - pdf-server
     volumes:
       - "./certs:/src/certs:ro"
     environment:
+      MONGO: mongodb://mongo:27017/formio
       PDF_SERVER: http://pdf-server:4005
-      MONGO_CA: /src/certs/rds-combined-ca-us-gov-bundle.pem
+      DB_SECRET: CHANGEME
+      JWT_SECRET: CHANGEME
+      PORTAL_ENABLED: 1
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASS: CHANGEME
       PORT: 3000
+    env_file:
+      - .env
   pdf-server:
     image: formio/pdf-server
+    restart: always
     mem_limit: 1024m
     ports:
       - "4005:4005"
+    links:
+      - mongo
+      - minio
     volumes:
       - "./certs:/src/certs:ro"
     environment:
+      MONGO: mongodb://mongo:27017/formio
+      FORMIO_S3_SERVER: minio
+      FORMIO_S3_PORT: 9000
+      FORMIO_S3_BUCKET: formio
+      FORMIO_S3_KEY: CHANGEME
+      FORMIO_S3_SECRET: CHANGEME
       FORMIO_PDF_PORT: 4005
-      MONGO_CA: /src/certs/rds-combined-ca-us-gov-bundle.pem
+    env_file:
+      - .env
   nginx-proxy:
     image: nginx
+    restart: always
     mem_limit: 128m
     ports:
       - "80:80"
     volumes:
       - "./certs:/src/certs:ro"
-      - "./conf.d.ssl:/etc/nginx/conf.d:ro"
+      - "./conf.d:/etc/nginx/conf.d:ro"
     links:
       - api-server
       - pdf-server
