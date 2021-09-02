@@ -1,5 +1,5 @@
-const SERVER_VERSION = `formio/formio-enterprise:${process.argv[2] || '7.1.7'}`;
-const PDF_VERSION = `formio/pdf-server:${process.argv[3] || '3.1.5'}`;
+const SERVER_VERSION = `formio/formio-enterprise:${process.argv[2] || '7.1.8'}`;
+const PDF_VERSION = `formio/pdf-server:${process.argv[3] || '3.2.0'}`;
 const SUBSERVER_VERSION = `formio/formio-enterprise:${process.argv[4] || '8.0.0-m.16'}`;
 const child_process = require("child_process");
 const fs = require('fs');
@@ -33,7 +33,7 @@ const createPackage = function(type, file, image, pdfImage, subImage, config, ce
   }
   fs.writeFileSync(`./package/${manifest}`, result, 'utf8');
   try {
-    child_process.execSync(`zip -r ../builds/${type}/${file} ${manifest} certs/* ${ssl ? 'conf.d.ssl' : 'conf.d'}/* .ebextensions/*`, {
+    child_process.execSync(`zip -r ../builds/${type}/${file} ${manifest} .env certs/* ${ssl ? 'conf.d.ssl' : 'conf.d'}/* .ebextensions/*`, {
       cwd: path.join(__dirname, 'package')
     });
   }

@@ -1,5 +1,5 @@
 .DS_Store
 .idea
-.env
+data
 package/certs/cert.crt
 package/certs/cert.key
