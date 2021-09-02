@@ -1,5 +1,5 @@
-const SERVER_VERSION = `formio/formio-enterprise:${process.argv[2] || '7.1.7'}`;
-const PDF_VERSION = `formio/pdf-server:${process.argv[3] || '3.1.5'}`;
+const SERVER_VERSION = `formio/formio-enterprise:${process.argv[2] || '7.1.8'}`;
+const PDF_VERSION = `formio/pdf-server:${process.argv[3] || '3.2.0'}`;
 const SUBSERVER_VERSION = `formio/formio-enterprise:${process.argv[4] || '8.0.0-m.16'}`;
 const child_process = require("child_process");
 const fs = require('fs');
