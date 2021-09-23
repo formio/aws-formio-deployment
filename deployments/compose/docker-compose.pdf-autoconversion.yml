@@ -1,0 +1,65 @@
+version: "3.8"
+services:
+  pdf-libs:
+    image: formio/pdf-libs:1.0.0
+    mem_limit: 256m
+    environment:
+      PORT: 8080
+    env_file:
+      - .env
+  pdf-converter:
+    image: 551091399009.dkr.ecr.us-east-1.amazonaws.com/pdf-converter:latest
+    mem_limit: 1024m
+    links:
+      - pdf-libs
+    environment:
+      PDFLIBS_URL: http://pdf-libs:8080
+      PORT: 4000
+      SNS_LISTENER_PORT: 4444
+    ports:
+      - "4444:4444"
+    env_file:
+      - .env
+  api-server:
+    image: 551091399009.dkr.ecr.us-east-1.amazonaws.com/formio-server-pdf-autoconversion:latest
+    mem_limit: 1024m
+    ports:
+      - "3000:3000"
+    links:
+      - pdf-server
+    volumes:
+      - "./certs:/src/certs:ro"
+    environment:
+      PDF_SERVER: http://pdf-autoconversion.eba-awmj4yyx.us-east-1.elasticbeanstalk.com/pdf/
+      MONGO_CA: /src/certs/rds-combined-ca-bundle.pem
+      PORT: 3000
+    env_file:
+      - .env
+  pdf-server:
+    image: 551091399009.dkr.ecr.us-east-1.amazonaws.com/pdf-server-pdf-autoconversion:dev
+    mem_limit: 1024m
+    links:
+      - pdf-libs
+      - pdf-converter
+    ports:
+      - "4005:4005"
+    volumes:
+      - "./certs:/src/certs:ro"
+    environment:
+      PDF2FORMIO_URL: http://pdf-converter:4000
+      PDFLIBS_URL: http://pdf-libs:8080
+      FORMIO_PDF_PORT: 4005
+      MONGO_CA: /src/certs/rds-combined-ca-bundle.pem
+    env_file:
+      - .env
+  nginx-proxy:
+    image: nginx
+    mem_limit: 128m
+    ports:
+      - "80:80"
+    volumes:
+      - "./certs:/src/certs:ro"
+      - "./conf.d:/etc/nginx/conf.d:ro"
+    links:
+      - api-server
+      - pdf-server
