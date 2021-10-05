@@ -67,6 +67,14 @@ module.exports = {
                 manifest: fs.readFileSync(path.join(__dirname, 'compose/docker-compose.prod.yml'), 'utf8')
             },
             {
+                file: 'multicontainer.next.zip',
+                manifest: fs.readFileSync(path.join(__dirname, 'compose/docker-compose.next.yml'), 'utf8')
+            },
+            {
+                file: 'multicontainer.next.local.zip',
+                manifest: fs.readFileSync(path.join(__dirname, 'compose/docker-compose.next.local.yml'), 'utf8')
+            },
+            {
                 file: 'multicontainer.ssl.zip',
                 manifest: fs.readFileSync(path.join(__dirname, 'compose/docker-compose.ssl.yml'), 'utf8'),
                 ssl: true

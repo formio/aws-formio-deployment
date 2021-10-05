@@ -1,5 +1,23 @@
 version: "3.8"
 services:
+  mongo:
+    image: mongo
+    restart: always
+    volumes:
+      - "./data/db:/data/db"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME:
+      MONGO_INITDB_ROOT_PASSWORD:
+  minio:
+    image: minio/minio
+    restart: always
+    volumes:
+      - "./data/minio/data:/data"
+      - "./data/minio/config:/root/.minio"
+    environment:
+      MINIO_ACCESS_KEY: CHANGEME
+      MINIO_SECRET_KEY: CHANGEME
+    command: server /data
   pdf-libs:
     image: formio/pdf-libs:1.0.0
     mem_limit: 256m
@@ -21,24 +39,28 @@ services:
     env_file:
       - .env
   api-server:
-    image: 551091399009.dkr.ecr.us-east-1.amazonaws.com/formio-server-pdf-autoconversion:latest
+    image: formio/formio-enterprise
     mem_limit: 1024m
     ports:
       - "3000:3000"
     links:
+      - mongo
       - pdf-server
     volumes:
       - "./certs:/src/certs:ro"
     environment:
-      PDF_SERVER: http://pdf-autoconversion.eba-awmj4yyx.us-east-1.elasticbeanstalk.com/pdf/
-      MONGO_CA: /src/certs/rds-combined-ca-bundle.pem
+      MONGO: mongodb://mongo:27017/formio
+      PDF_SERVER: http://pdf-server:4005
+      PORTAL_ENABLED: 1
       PORT: 3000
     env_file:
       - .env
   pdf-server:
-    image: 551091399009.dkr.ecr.us-east-1.amazonaws.com/pdf-server-pdf-autoconversion:dev
+    image: formio/pdf-server
     mem_limit: 1024m
     links:
+      - mongo
+      - minio
       - pdf-libs
       - pdf-converter
     ports:
@@ -46,10 +68,15 @@ services:
     volumes:
       - "./certs:/src/certs:ro"
     environment:
+      MONGO: mongodb://mongo:27017/formio
+      FORMIO_S3_SERVER: minio
+      FORMIO_S3_PORT: 9000
+      FORMIO_S3_BUCKET: formio
+      FORMIO_S3_KEY: CHANGEME
+      FORMIO_S3_SECRET: CHANGEME
       PDF2FORMIO_URL: http://pdf-converter:4000
       PDFLIBS_URL: http://pdf-libs:8080
       FORMIO_PDF_PORT: 4005
-      MONGO_CA: /src/certs/rds-combined-ca-bundle.pem
     env_file:
       - .env
   nginx-proxy:

@@ -30,11 +30,7 @@ services:
     environment:
       MONGO: mongodb://mongo:27017/formio
       PDF_SERVER: http://pdf-server:4005
-      DB_SECRET: CHANGEME
-      JWT_SECRET: CHANGEME
       PORTAL_ENABLED: 1
-      ADMIN_EMAIL: admin@example.com
-      ADMIN_PASS: CHANGEME
       PORT: 3000
     env_file:
       - .env

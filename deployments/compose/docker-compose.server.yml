@@ -10,5 +10,6 @@ services:
     environment:
       PORT: 80
       MONGO_CA: /src/certs/rds-combined-ca-bundle.pem
+      PORTAL_ENABLED: 1
     env_file:
       - .env

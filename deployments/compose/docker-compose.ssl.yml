@@ -10,6 +10,7 @@ services:
     environment:
       PDF_SERVER: https://pdf-server:4005
       MONGO_CA: /src/certs/rds-combined-ca-bundle.pem
+      PORTAL_ENABLED: 1
       SSL_CERT: ${SSL_CERT}
       SSL_KEY: ${SSL_KEY}
       PORT: 3000
