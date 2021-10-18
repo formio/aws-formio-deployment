@@ -7,33 +7,41 @@ const path = require('path');
 const sslCert = fs.readFileSync('./package/certs/cert.crt', 'utf8');
 const sslKey = fs.readFileSync('./package/certs/cert.key', 'utf8');
 const deployments = require('./deployments');
-const createPackage = function(type, file, image, pdfImage, subImage, config, cert, ssl, manifest) {
+const createPackage = function(type, deployment, manifest) {
   console.log('Removing previous package.');
   try {
-    fs.unlinkSync(`./builds/${type}/${file}`);
+    fs.unlinkSync(`./builds/${type}/${deployment.file}`);
   }
   catch (err) {}
-  console.log(`Creating package ${type}/${file} with image ${image}`);
-  let result = config;
-  if (image) {
-    result = config.replace(/formio\/formio-enterprise/g, image);
+  console.log(`Creating package ${type}/${deployment.file} with image ${deployment.image}`);
+  let result = deployment.manifest;
+  if (deployment.image) {
+    result = deployment.manifest.replace(/formio\/formio-enterprise/g, deployment.image);
   }
-  if (pdfImage) {
-    result = result.replace(/formio\/pdf-server/g, pdfImage);
+  if (deployment.pdfImage) {
+    result = result.replace(/formio\/pdf-server/g, deployment.pdfImage);
   }
-  if (subImage) {
-    result = result.replace(/formio\/submission-server/g, subImage);
+  if (deployment.subImage) {
+    result = result.replace(/formio\/submission-server/g, deployment.subImage);
   }
-  if (cert) {
-    result = result.replace(/rds-combined-ca-bundle/g, cert);
+  if (deployment.cert) {
+    result = result.replace(/rds-combined-ca-bundle/g, deployment.cert);
   }
-  if (ssl) {
+  if (deployment.ssl) {
     result = result.replace(/\$\{SSL_CERT\}/g, sslCert.toString().replace(/\n/g, '\\n'));
     result = result.replace(/\$\{SSL_KEY\}/g, sslKey.toString().replace(/\n/g, '\\n'));
   }
   fs.writeFileSync(`./package/${manifest}`, result, 'utf8');
   try {
-    child_process.execSync(`zip -r ../builds/${type}/${file} ${manifest} .env certs/* ${ssl ? 'conf.d.ssl' : 'conf.d'}/* .ebextensions/*`, {
+    const files = [];
+    files.push(manifest);
+    if (deployment.includeEnv) {
+      files.push('.env.example');
+    }
+    files.push('certs/*');
+    files.push(`${deployment.ssl ? 'conf.d.ssl' : 'conf.d'}/*`);
+    files.push('.ebextensions/*');
+    child_process.execSync(`zip -r ../builds/${type}/${deployment.file} ${files.join(' ')}`, {
       cwd: path.join(__dirname, 'package')
     });
   }
@@ -47,17 +55,10 @@ const createPackage = function(type, file, image, pdfImage, subImage, config, ce
 for (let type in deployments) {
   if (deployments.hasOwnProperty(type)) {
     deployments[type].deployments.forEach((deployment) => {
-      createPackage(
-        type,
-        deployment.file,
-        deployment.latest ? '' : SERVER_VERSION,
-        deployment.latest ? '' : PDF_VERSION,
-        deployment.latest ? 'formio/formio-enterprise:8.0.0-m.16' : SUBSERVER_VERSION,
-        deployment.manifest,
-        deployment.cert,
-        deployment.ssl,
-        deployments[type].manifest
-      );
+      deployment.image = deployment.latest ? '' : SERVER_VERSION;
+      deployment.pdfImage = deployment.latest ? '' : PDF_VERSION;
+      deployment.subImage = deployment.latest ? 'formio/formio-enterprise:8.0.0-m.16' : SUBSERVER_VERSION;
+      createPackage(type, deployment, deployments[type].manifest);
     });
   }
 }

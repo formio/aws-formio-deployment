@@ -55,7 +55,8 @@ module.exports = {
         deployments: [
             {
                 file: 'multicontainer.local.zip',
-                manifest: fs.readFileSync(path.join(__dirname, 'compose/docker-compose.yml'), 'utf8')
+                manifest: fs.readFileSync(path.join(__dirname, 'compose/docker-compose.yml'), 'utf8'),
+                includeEnv: true
             },
             {
                 file: 'multicontainer.latest.zip',
