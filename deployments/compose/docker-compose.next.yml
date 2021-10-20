@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   pdf-libs:
-    image: formio/pdf-libs:1.0.0
+    image: formio/pdf-libs:1.0.1
     mem_limit: 256m
     environment:
       PORT: 8080
